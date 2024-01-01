@@ -5,7 +5,7 @@ from langchain.chains import LLMChain
 
 
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 
 
 prefix = """
