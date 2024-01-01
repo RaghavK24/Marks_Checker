@@ -5,7 +5,7 @@ from langchain.chains import LLMChain
 from langchain.output_parsers import ResponseSchema, StructuredOutputParser
 
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "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"
 
 
 prefix = """
@@ -33,7 +33,8 @@ components of the model answer, how you will do that is by seeing if there are c
 then give marks for individual components. For example, you see how much the context match with those of component 1 and give marks according
 to the total marks of component 1 which is 1.5, then you repeat this for all the components. Remember that the marks you give should be 
 a multiple of 0.25.After you have done all this add all the scores of each component and give the marks that the student has got.
-Please dont worry about the description or the spacing or spelling errors and just match context.
+Please dont worry about the description or the spacing or spelling errors and just match context.The reason we are matching context is because
+students can write different answers which lead to the same conclusion so matching context rather than specificity becomes important.
 
 At the end, also give the reason why the score of the student is given like that in an up to the point manner
 
@@ -48,8 +49,9 @@ Marks = ResponseSchema(
 
 Reason = ResponseSchema(
         name="reason",
-        description="The reason for the marks assigned to the student",
+        description="The reason for the marks assigned to the student for  different components",
     )
+
 
 
 output_parser = StructuredOutputParser.from_response_schemas(
@@ -57,15 +59,14 @@ output_parser = StructuredOutputParser.from_response_schemas(
 )
 response_format = output_parser.get_format_instructions()
 
-prompt = PromptTemplate(input_variables=["input", "model", "response_format", "marks"],template=prefix)
+prompt = PromptTemplate(input_variables=["input", "model", "response_format"],template=prefix) 
 
 llm = ChatOpenAI(temperature=0)
 llm_chain= LLMChain(llm=llm,prompt=prompt)
 
-marks = 3
 
 def check(query):
-    response1 = llm_chain.run(input = query, response_format = response_format)
+    response1 = llm_chain.run(input = query, response_format = response_format) 
     response2 = output_parser.parse(response1)
     return response2
 
